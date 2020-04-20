@@ -1,0 +1,39 @@
+#include "udf.h"  /* must be at the beginning of every UDF you write */
+
+#define temp_air_ini 288.15
+#define CMU    0.09
+/*atmospheric stability*/
+#define C2 -0.004/*-d_theta/dz*/
+#define C3 0.00347
+#define kesai 0.0001
+#define Ce1 1.44
+
+
+DEFINE_PROFILE(Cx_velocity,thread,position) /*inlet x_velocity profile*/
+{
+face_t f;
+real x[ND_ND];
+real z;
+begin_f_loop(f,thread)
+{
+  F_CENTROID(x,f,thread);
+  z=x[1];
+  F_PROFILE(f,thread,position)=0.05934/0.41*log((z+0.03)/0.03); 
+  }
+  end_f_loop(f,thread)
+}
+
+DEFINE_PROFILE(e,thread,position) /*turbulent kinetic energy k is set*/
+{
+face_t f;
+real x[ND_ND];
+real z;
+begin_f_loop(f,thread)
+{
+  F_CENTROID(x,f,thread);
+  z=x[1];
+   F_PROFILE(f,thread,position)=0.05934*0.05934*0.05934/(z+0.03)/0.41; 
+}
+  end_f_loop(f,thread)
+}
+
